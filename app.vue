@@ -1,19 +1,10 @@
 <script setup lang="ts">
-const { data: todos } = useFetch("/api/todo");
-
 const input = ref("");
+const { todos, addTodo, updateTodo, deleteTodo } = useTodos();
 
-const addTodo = async () => {
-  if (!input) return;
-  await $fetch("/api/todo", { method: "post", body: { item: input.value } });
-};
-
-const updateTodo = async (id) => {
-  await $fetch(`/api/todo/${id}`, { method: "put" });
-};
-
-const deleteTodo = async (id) => {
-  await $fetch(`/api/todo/${id}`, { method: "delete" });
+const handleClick = () => {
+  addTodo(input.value);
+  input.value = "";
 };
 </script>
 
@@ -23,7 +14,7 @@ const deleteTodo = async (id) => {
       <h1>My Todos</h1>
       <div class="add-todo">
         <input placeholder="Add a new todo..." v-model="input" />
-        <NButton @click="addTodo">Add</NButton>
+        <NButton @click="handleClick">Add</NButton>
       </div>
       <NCard
         @click="() => updateTodo(todo.id)"
