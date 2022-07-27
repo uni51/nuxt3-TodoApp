@@ -3,10 +3,10 @@ import { v4 as uuid } from "uuid";
 import { sendError } from "h3";
 
 export default defineEventHandler(async (e) => {
-	console.log({ e });
 	const method = e.req.method;
 
 	if (method === "GET") {
+		console.log(db.todos)
 		return db.todos;
 	}
 

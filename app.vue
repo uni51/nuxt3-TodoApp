@@ -1,5 +1,20 @@
 <script setup lang="ts">
 const { data: todos } = useFetch("/api/todo");
+
+const input = ref("");
+
+const addTodo = async () => {
+  if (!input) return;
+  await $fetch("/api/todo", { method: "post", body: { item: input.value } });
+};
+
+const updateTodo = async (id) => {
+  await $fetch(`/api/todo/${id}`, { method: "put" });
+};
+
+const deleteTodo = async (id) => {
+  await $fetch(`/api/todo/${id}`, { method: "delete" });
+};
 </script>
 
 <template>
@@ -7,12 +22,17 @@ const { data: todos } = useFetch("/api/todo");
     <NCard class="cards">
       <h1>My Todos</h1>
       <div class="add-todo">
-        <input placeholder="Add a new todo..." />
-        <NButton>Add</NButton>
+        <input placeholder="Add a new todo..." v-model="input" />
+        <NButton @click="addTodo">Add</NButton>
       </div>
-      <NCard class="card" v-for="todo in todos" :key="todo.id">
-        <h4>{{ todo.item }}</h4>
-        <p>x</p>
+      <NCard
+        @click="() => updateTodo(todo.id)"
+        class="card"
+        v-for="todo in todos"
+        :key="todo.id"
+      >
+        <h4 :class="todo.completed ? 'complete' : null">{{ todo.item }}</h4>
+        <p @click="() => deleteTodo(todo.id)">x</p>
       </NCard>
     </NCard>
   </div>
@@ -44,5 +64,9 @@ input {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+}
+
+.complete {
+  text-decoration: line-through;
 }
 </style>
